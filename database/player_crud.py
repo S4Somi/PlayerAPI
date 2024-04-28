@@ -1,28 +1,24 @@
-from fastapi import HTTPException
-from .models import PlayerDB, PlayerBase
+from .models import PlayerDB, PlayerBase, Event
+from sqlmodel import Session, select
 
-# temp dict of players for testing
-players = {
-    0:{"name":"player1", "player_id":0},
-    1:{"name":"player2", "player_id":1},
-    2:{"name":"player3", "player_id":2},
-}
+# finds all players in the database
+def find_players(session:Session):
+    return session.exec(select(PlayerDB)).all()
 
-# get all players in dict, if dict empty return empty, makes sense i think
-def find_players():
-    if players == {}:
-        return []
-    return [players[p] for p in players]
-   
-# find player by id returns name, id, still todo: return events fr
-def find_1player(player_id:int):
-    if player_id not in players:
-        raise HTTPException(status_code=404, detail=f"Player with id {player_id} was not found.")
-    return players[player_id]
 
-# add a new player w unique id
-def add_player(player_in:PlayerBase):
-    new_id=max(players.keys()) + 1
-    player = PlayerDB(**player_in.model_dump(), player_id=new_id)
-    players[new_id] = player.model_dump()
-    return player
+# finds player by id, returns name, id, events
+def find_1player(session:Session, id:int):
+    
+    statement = select(PlayerDB).join(Event, isouter=True).where(PlayerDB.id==id)
+    results = session.exec(statement)
+    for player in results:
+        return {"player":player, "events":player.events}
+
+
+# adds a new player to the database
+def add_player(session:Session, player_in:PlayerBase):
+    players_db = PlayerDB.model_validate(player_in)
+    session.add(players_db)
+    session.commit()
+    session.refresh(players_db)
+    return players_db

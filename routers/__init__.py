@@ -1,1 +1,1 @@
-__all__ = ["players"]
+__all__ = ["players", "events"]

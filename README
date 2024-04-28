@@ -1,0 +1,9 @@
+Project uses python version 3.10.0
+Make a virtual environment to run the app
+
+For the api to work install FastAPI, SQLModel and uvicorn: 
+    pip install fastapi uvicorn sqlmodel and you're good to go
+
+
+Run in terminal to boot:
+uvicorn main:app --reload

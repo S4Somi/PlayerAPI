@@ -1,19 +1,20 @@
-from pydantic import BaseModel
+from sqlmodel import Field, SQLModel, Relationship
+from typing import Optional
+from datetime import datetime
 
-
-class PlayerBase(BaseModel):
+class PlayerBase(SQLModel):
     name:str
 
-class PlayerDB(PlayerBase):
-    player_id:int
-    
-class PlayersEvents(PlayerDB):
-    events:list[str] = []
+class PlayerDB(PlayerBase, table=True):
+    id: int = Field(default=None, primary_key=True)
+    events: list["Event"] = Relationship(back_populates="player")
 
-
-# event model inherits player_id from PlayerDB ?
-class Event(PlayerDB):
-    event_id:int
-    type:str
+class EventBase(SQLModel):
+    type: str
     detail:str
-    timestamp:str # from datetime import datetime / datetime.now() ?
+
+class Event(EventBase, table=True):
+    id: int = Field(default=None, primary_key=True)
+    player_id:int = Field(foreign_key="playerdb.id")
+    timestamp:datetime = Field(default=datetime.now())
+    player: Optional[PlayerDB] = Relationship(back_populates="events")
