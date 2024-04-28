@@ -1,9 +1,13 @@
-Project uses python version 3.10.0
-Make a virtual environment to run the app
+Project uses Python version 3.10.0
+Remember to make a virtual environment to run the app
 
-For the api to work install FastAPI, SQLModel and uvicorn: 
-    pip install fastapi uvicorn sqlmodel and you're good to go
+Dependencies: FastAPI, SQLModel and uvicorn: 
 
 
-Run in terminal to boot:
+Step by step in the cmd line: 
+
+git clone https://github.com/S4Somi/PlayerAPI.git
+cd PlayerAPI
+pip install fastapi uvicorn sqlmodel
+python main.py
 uvicorn main:app --reload

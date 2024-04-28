@@ -8,7 +8,6 @@ def find_players(session:Session):
 
 # finds player by id, returns name, id, events
 def find_1player(session:Session, id:int):
-    
     statement = select(PlayerDB).join(Event, isouter=True).where(PlayerDB.id==id)
     results = session.exec(statement)
     for player in results:
